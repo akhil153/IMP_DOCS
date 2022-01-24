@@ -636,6 +636,58 @@ https://access.redhat.com/solutions/4308191
 get tls.crt from above link and put it inside of /etc/docker/certs.d/default-route-openshift-image-registry-apps.ocp4.eidikointernal.com
 ca.crt & tls.crt put inside of /etc/docker/certs.d/default-route-openshift-image-registry-apps.ocp4.eidikointernal.com
 
+Project delete--->terminating state to delete
+---------------------------------------------
+https://access.redhat.com/solutions/4165791
+
+oc login and EOF error
+----------------------
+https://bugzilla.redhat.com/show_bug.cgi?id=1759523
+
+Logging / kibana
+----------------
+https://docs.openshift.com/container-platform/4.6/logging/cluster-logging-deploying.html
+
+kube controller manager degraded state to success state
+-------------------------------------------------------
+https://access.redhat.com/solutions/4849711
+
+Api connect configuration in openshift
+--------------------------------------
+https://www.ibm.com/docs/en/api-connect/10.0.1.x?topic=openshift-installing-in-online-environment
+
+Data power global commands
+--------------------------
+https://www.ibm.com/docs/en/datapower-gateways/10.0.1?topic=commands-global
+
+App connect licences
+---------------------
+http://ibm.biz/acelicense-eus
+
+What is license... Where we can use
+-----------------------------------
+https://www-40.ibm.com/software/sla/sladb.nsf/lilookup/F54FB96CAA8F98B6002587A70064C5F2?OpenDocument
+
+Ibm support
+-----------
+https://www.ibm.com/mysupport/s/supportaccess
+
+Data power webui in openshift
+-----------------------------
+https://community.ibm.com/community/user/integration/blogs/keshav-anand-maligemane/2021/09/14/enable-webgui-on-datapower-instance-on-cp4i
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
