@@ -1,0 +1,705 @@
+Operations dashboard installation:
+---------------------------------
+https://www.ibm.com/docs/en/cloud-paks/cp-integration/2019.3?topic=dashboard-operations-installation
+
+DIFFERENT TYPES OF CP4I VERSION DOCUMENTS
+------------------------------------------
+https://www.ibm.com/docs/en/cloud-paks/cp-integration
+
+CP4I MAIN DOCMENTATION FOR ANYTHING TO DO
+---------------------------------------------
+https://www.ibm.com/docs/en
+
+DB2 CONNECTIVITY
+----------------------------------
+https://www.ibm.com/support/pages/app-connect-enterprise-data-collector-script
+Run the mqsicvp command against the DB2 dabatabase. 
+https://www.ibm.com/docs/en/app-connect/11.0.0?topic=eocd-connecting-database-from-linux-unix-systems-by-using-integration-odbc-database-extender
+
+License for integration server in ace dashboard For ace 11
+-------------------------------------------------------------
+http://ibm.biz/acelicense-eus
+
+configuration objects ....
+----------------------------------------
+https://www.ibm.com/docs/en/app-connect/containers_cd?topic=servers-configuration-types-integration
+
+integration server and its clear description
+----------------------------------------------
+https://www.ibm.com/docs/en/app-connect/containers_cd?topic=resources-integration-server-reference#update
+
+Ace integrationserver particular version images.. From ibm entitlement registry
+---------------------------------------------------------------------------------
+https://www.ibm.com/docs/en/app-connect/containers_cd?topic=obtaining-app-connect-enterprise-server-image-from-cloud-container-registry#aceimages
+
+enabling the default registry
+----------------------------------
+https://docs.openshift.com/container-platform/4.5/registry/configuring-registry-operator.html
+
+About configurations and server creations in ACE
+-------------------------------------------------
+https://www.ibm.com/docs/en/app-connect/containers_cd?topic=servers-configuration-types-integration
+
+Kube-controller- manager  ... True state
+----------------------------------------
+oc patch kubecontrollermanager/cluster --type merge -p "{\"spec\":{\"forceRedeploymentReason\":\"Forcing new revision with random number $RANDOM to make message unique\"}}"
+
+Image registry cluster operator  degraded... To make it available
+-----------------------------------------------------------------
+https://access.redhat.com/solutions/5341521
+
+for changing the management state
+---------------------------------
+oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed"}}'
+
+openshift-apiserver cluster operator to be available
+----------------------------------------------------
+https://access.redhat.com/solutions/5896081
+
+Image registry cluster operator  degraded... To make it available
+-----------------------------------------------------------------
+https://access.redhat.com/solutions/5341521
+
+capacity planning for openshift by ahmed
+----------------------------------------
+https://www.ibm.com/cloud/architecture/articles/ibmaot-redhat-openshift/02-solutions-guide-capacity-planning-capacity-planning/
+
+Entitlement key to be used whenever installing cp4i. This is the licensed one
+-----------------------------------------------------------------------------
+eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJJQk0gTWFya2V0cGxhY2UiLCJpYXQiOjE2MTI1Mjk5MDYsImp0aSI6ImFmMjY0NWI4OGQ5ZDRiYTNiMzFjOWIwODBlN2U3ODQzIn0.xqfRNiJvfJHURgtW-q0TEYH1b1GzTki3PQmD7VhX4YU
+
+apic dashboard user login
+-------------------------
+https://www.ibm.com/docs/en/api-connect/10.0.x?topic=environment-onboarding-new-admin-cloud-pak-integration
+from Ahmed Azraq (IBM) to Everyone10:49
+https://www.ibm.com/docs/en/cloud-paks/cp-integration/2020.4?topic=products-api-management-deployment
+
+link to add catalogsources and installing operator of platform navigator
+------------------------------------------------------------------------
+https://www.ibm.com/docs/en/cloud-paks/cp-integration/2020.4?topic=installing-adding-online-catalog-sources-cluster
+
+Registry setup for docker login -u admin command
+------------------------------------------------
+https://docs.openshift.com/container-platform/4.1/registry/securing-exposing-registry.html
+
+Adding default storage class to cp4i
+--------------------------------------
+kubectl patch storageclass gold -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+To delete/remove the the default  storage class in cp4i
+-------------------------------------------------------
+kubectl patch storageclass standard -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+NOTE:Must add default storage class.. rbd  .. To cp4i
+
+time & date synchronisation in openshift
+----------------------------------------
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/ch-date_and_time_configuration#sect-Date_and_Time_Configuration-Date_and_Time
+
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+
+OPENSHIFT INSTALLATION ON BARE METAL
+====================================
+
+Required machines:
+------------------
+1. One temporary bootstrap machine
+2. Three control plane or master machines
+3. At least two compute machines, which are also known as worker machines.
+
+Note: The cluster requires the bootstrap machine to deploy the OpenShift Container Platform cluster
+      on the three control plane machines. You can remove  the bootstrap machine after you install the cluster.
+
+Resource requirements for machines:
+-----------------------------------
+Machine      cpu       storage    ram
+1.bootstrap   4		120gb	  16gb
+2.master      4         120gb     16gb
+3.worker      2         120gb     8gb
+
+Creating the user-provisioned infrastructure:
+---------------------------------------------
+     Before you deploy an OpenShift Container Platform cluster that uses user-provisioned infrastructure, you must create the underlying infrastructure
+
+Prerequisites:
+--------------
+1.Configure DHCP(Dynamic Host Configuration Protocol) or set static IP addresses on each node:
+
+-->  DHCP server is configured to provide persistent IP addresses and host names to the cluster machines.
+-->  During the initial boot, the machines require either a DHCP server or that static IP addresses be set on each host in the cluster to establish a network connection, which allows them to download their Ignition config files.
+-->  If DHCP is configured then don't need to set static ip's on machines.
+
+NOTE: To configure the DHCP follow the link -->  https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwje057zl-ryAhXXZSsKHafHC3MQFnoECAMQAQ&url=https%3A%2F%2Felearningsurasakblog.wordpress.com%2F2019%2F09%2F24%2Fhow-to-install-and-configure-dhcp-server-on-centos7%2F&usg=AOvVaw32rZ69EU0A1tkiVPZwoopB
+
+NOTE: If DHCP is not configured then update the static ip's on each machine.
+
+2.Provision the required load balancers:
+----------------------------------------
+ 
+Load balancers:
+---------------
+Before you install OpenShift Container Platform, you must provision two load balancers that meet the following requirements
+
+1.API load balancer: Provides a common endpoint for users, both human and machine, to interact with and configure the platform.
+2.Application Ingress load balancer: Provides an Ingress point for application traffic flowing in from outside the cluster.
+
+NOTE: To know more detailed about load balancer -->  https://docs.openshift.com/container-platform/4.7/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html
+
+3.Configure the ports for your machines:
+----------------------------------------
+ 
+  OpenShift infrastructure components communicate with each other using ports, which are communication endpoints that are identifiable for specific processes or services. Ensure the following ports required by OpenShift are open between hosts, for example if you have a firewall in your environment. Some ports are optional depending on your configuration and usage.
+
+NOTE: To know more about ports click on -->  https://docs.openshift.com/enterprise/3.1/install_config/install/prerequisites.html  
+                                             go to Network Access and check about ports.
+
+4.Configure DNS:
+----------------
+     
+   DNS stands for Domain Name System, translates hostnames or URLs into IP addresses. For example, if we type www.eidiko.com in browser, the DNS server translates the domain name into its associated ip address. Since the IP addresses are hard to remember all time, DNS servers are used to translate the hostnames like www.eidiko.com to 173.xxx.xx.xxx. So it makes easy to remember the domain names instead of its IP address.
+
+NOTE: To know more about DNS configuration click on --> https://www.itzgeek.com/how-tos/linux/centos-how-tos/configure-dns-bind-server-on-centos-7-rhel-7.html
+
+    The above are the prerequsites for the installation of openshift.
+
+NOTE: If you use ansible command then no need to configure the above prereqisites.Ansible command by deafult configures all the prerequsites.
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+when we are installing openshift we need 4 files
+================================================
+1.openshift-installer 
+-->  Take the file from --> https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.6.8/openshift-client-linux-4.6.8.tar.gz (you need to     extract the tar file)
+
+2.bios files
+-->  Take the file from --> https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.6/4.6.8/rhcos-4.6.8-x86_64-metal.x86_64.raw.gz (you need to change the file name as bios.raw.gz)
+
+3.oc and kubectl commands files
+-->  Take the file from --> https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.6.8/openshift-install-linux-4.6.8.tar.gz (you need to     extract the tar file)
+
+4.core of rhcos
+-->  Take the file from --> https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/4.6/4.6.8/rhcos-4.6.8-x86_64-live.x86_64.iso (you use this file in bare metal)
+
+The above 4 files are required for openshift installation.
+
+After installing the above 4 files you need to copy those files into different paths
+--> oc, kubectl, openshift-installer --> copy those 3 files into   /usr/local/bin
+--> bios.raw.gz --> copy this file into   /var/www/html/install 
+
+After getting the above 4 files we must configure below services
+
+1.ntp must be configring in ur system: 
+----------------------------------------
+       NTP (Network Time Protocol) is for keeping hosts in sync with the world clock. Time synchronization is important for time sensitive operations, such as log keeping and time stamps, and is highly recommended for Kubernetes, which OpenShift Container Platform is built on.
+
+NOTE: To know more about ntp configuration click on -->  https://docs.openshift.com/container-platform/3.11/day_two_guide/run_once_tasks.html
+
+      -$ timedatectl   -->  To check ntp is configured or not 
+  If ntp is not configured follow below commands to configure ntp
+      # timedatectl set-ntp true
+      # yum install chrony
+      # systemctl enable chronyd --now
+
+2.firewall must be stoped:
+--------------------------
+    Firewalld is a dynamically managed firewall solution that supports network zoning. System admins use it to allow and disallow incoming and outgoing traffic dynamically.So we disable firewall for allow any network traffic.
+
+NOTE: To know more about firewalld click on -->  https://phoenixnap.com/kb/how-to-disable-stop-firewall-centos
+
+      $ systemctl status firewalld  -->  To check firewalld status
+      $ systemctl stop firewalld  -->  To disable firewall
+
+3.named sshd , haproxy service must be active:
+-----------------------------------------------
+    HAProxy (High Availability Proxy) is open source proxy and load balancing server software. It provides high availability at the network (TCP) and application (HTTP/S) layers, improving speed and performance by distributing workload across multiple servers. HAProxy runs on Linux, FreeBSD and Solaris operating systems.
+     
+      $ yum install haproxy  --> To install haproxy
+      $ systemctl status haproxy  -->  To check status of haproxy
+      $ systemctl start haproxy  --> To activate haproxy
+ 
+    The Secure Shell Daemon application (SSH daemon or sshd) is the daemon program for ssh. This program is an alternative to rlogin and rsh and provides encrypted communications between two untrusted hosts over an insecure network.
+
+      $ systemctl status sshd  -->  To check status of sshd
+      $ systemctl start sshd  -->  To activate sshd
+
+
+After completion of the above steps we must change the hostname
+      $ vi /etc/hosts  -->  Change hostname in hosts
+      $ vi /etc/hostname -->  Change hostname in hostname
+After changing the hostname you must reboot your system
+      $ reboot  -->  to reboot the system
+
+NOTE: To know more about hostname click on  -->  https://phoenixnap.com/kb/how-to-set-or-change-a-hostname-in-centos-7
+
+=====================================================================================================================================
+
+-->  If you use ansible command then no need to configure the prereqisites(DNS, DHCP, LoadBalancer, Configure the ports).Ansible command by deafult configures all the prerequsites.
+     $ yum -y install ansible git  -->  It will install all prequsites needed for openshift installation
+     $ ansible --version  -->  To check version(2.9.23 or above) of ansible
+NOTE: If you didn't get version as 2.9.23 or above then you have an error and then you have to update all packages.
+
+-->  create one directory as ocp4.6
+     $ mkdir ocp4.6
+     $ cd ocp4.6
+
+HelperNode:
+-----------
+-->  then after run git clone, it automatically creates helpernode directory
+     $  git clone https://github.com/RedHatOfficial/ocp4-helpernode
+
+
+      Every OpenShift Container Platform 4.x pattern includes a helper node. The helper node manages a number of services that are used to install, configure, and access an OpenShift cluster.
+The services include the following:
+
+    HA Proxy server - provides load balancing and proxy services
+    HTTP server - RHCOS nodes download the ignition config files from the HTTP server
+    DNS server - provides IP address name resolution
+    NFS server - provides storage for the OpenShift image repository
+    DHCP server - provides static IP address assignment based on the RHCOS node's MAC address
+NOTE: To check more about helpernode go to  -->  https://www.ibm.com/docs/en/psw/2.3.2.0?topic=patterns-openshift-container-platform-helper-node
+
+-->  Then go to helpernode directory and create one vars.yaml file
+     $ cd ocp4-helpernode/
+     $ touch vars.yaml  -->  To create vars.yaml file
+
+     staticips: true
+helper:
+  name: "helper"
+  ipaddr: "192.168.2.164"
+  networkifacename: "enp0s3"
+dns:
+  domain: "eidikointernal.com"
+  clusterid: "name"
+  forwarder1: "8.8.4.4"
+  forwarder2: "8.8.8.8"oc login https://api.naresh.eidikointernal.com:6443
+  forwarder3: "192.168.1.1"
+bootstrap:
+  name: "bootstrap1"
+  ipaddr: "192.168.1.161"
+masters:
+  - name: "master5"
+    ipaddr: "192.168.1.163"                                                                                  
+  - name: "master6"
+    ipaddr: "192.168.1.164"
+  - name: "master7"oc login https://api.naresh.eidikointernal.com:6443
+    ipaddr: "192.168.1.165"
+workers:
+  - name: "worker4"
+    ipaddr: "192.168.1.166"
+  - name: "worker5"
+    ipaddr: "192.168.1.168"
+  
+   paste the above yaml file in vars.yaml
+
+-->  Then check 6 unping ip addresses for each machine that ip's should be unreachable
+     $ ping @ipaddress
+Now, place all the 6 static ip's in vars.yaml file.
+
+-->  Then run the vars.yaml file through ansible command
+     $ ansible-playbook -e @vars.yaml tasks/main.yml 
+  After running the ansible-playbook command all the packages will be downloaded automatically which are required for openshift installation.
+
+
+-->  place helper ip address in /etc/resolv.conf
+     $ vi /etc/resolv.conf
+Add like this in /etc/resolv.conf   -->  search naresh.eidikointernal.com
+                                         nameserver @helper ip address
+
+--> To check dns is cofigured or not use dig command
+    $ dig bootstrapname.hostname  
+    $ dig mastername.hostname  -->  check for all the masters one by one
+    $ dig workernamae.hostname  -->  check for all the workers one by one
+After using dig command in the output if you get ANSWER as 1 then dns is configured if ANSWER is 0 then dns is not configured and you have an error.
+ 
+
+--> Generate an SSH private key and adding it to the agent 
+    If you want to perform installation debugging or disaster recovery on your cluster, you must provide an SSH key to both your ssh-agent and the installation program. You can use this key to access the bootstrap machine in a public cluster to troubleshoot installation issues.
+   
+For more informtion check ssh key in -->  https://docs.openshift.com/container-platform/4.6/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#prerequisites
+
+    $ ssh-keygen -t rsa -b 4096  -->  To generate ssh key
+    $ eval "$(ssh-agent -s)"  -->  To evaluate ssh key and Start the ssh-agent process as a background task
+    $ ssh-add  -->  To add ssh key in to agent
+
+--> Then create one directory as ocp and then create a file called install-config.yaml in ocp and mention ssh key in the file.
+    $ mkdir ocp
+    $ cd /ocp
+    $ touch install-config.yaml
+
+NOTE: To get install-config.yaml file and more details about this use below link
+https://docs.openshift.com/container-platform/4.6/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#installation-bare-metal-config-yaml_installing-restricted-networks-bare-metal
+
+- In the above yaml file take pull secret from redhat login account -->  https://cloud.redhat.com/openshift/install/pull-secret
+- Take ssh key from /root/.ssh/id_rsa.pub
+
+Creating manifest and ignition files:
+-------------------------------------
+Because you must modify some cluster definition files and manually start the cluster machines, you must generate the Kubernetes manifest and Ignition config files that the cluster needs to make its machines.
+
+The installation configuration file transforms into the Kubernetes manifests. The manifests wrap into the Ignition configuration files, which are later used to create the cluster.
+
+NOTE: To know more about manifest and ignition files click on --> https://docs.openshift.com/container-platform/4.6/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#installation-user-infra-generate-k8s-manifest-ignition_installing-restricted-networks-bare-metal
+
+    $ openshift-install create manifests --dir=<installation_directory>  -->  To create manifest files
+    $ openshift-install create ignition-configs --dir=<installation_directory>  -->  To create ignition files
+
+Then check (auth  bootstrap.ign  master.ign  metadata.json  worker.ign) these files or obtained or not in ocp directory.
+ 
+--> Give full permisiions to (bootstrap.ign  master.ign  metadata.json  worker.ign)
+    $ chmod -R 777 bootstrap.ign  master.ign  metadata.json  worker.ign
+  
+--> Then copy these (bootstrap.ign  master.ign  metadata.json  worker.ign) in to /var/www/html/install  directory
+    $ cp bootstrap.ign  master.ign  metadata.json  worker.ign /var/www/html/install
+
+--> Then go to the web(google) and check all 6 files are there or not
+    http://helperip:8080/install
+
+--> Once check firewall, if it is running stop firewall
+    $ systemctl stop firewalld
+
+--> Then go to the baremetal and run kernal commands
+
+1. coreos.inst.install_dev=sda coreos.inst.ignition_url=http://helperip:8080/install/bootstrap.ign
+coreos.inst.image_url=http://helperip:8080/install/bios.raw.gz
+ip=bootstrapip::192.168.1.1:255.255.252.0:bootstrapname::none nameserver=helperip
+
+2. coreos.inst.install_dev=sda coreos.inst.ignition_url=http://helperip:8080/install/master.ign
+coreos.inst.image_url=http://helperip:8080/install/bios.raw.gz
+ip=master1ip::192.168.1.1:255.255.252.0:master1name::none nameserver=helperip
+
+3. coreos.inst.install_dev=sda coreos.inst.ignition_url=http://helperip:8080/install/master.ign
+coreos.inst.image_url=http://helperip:8080/install/bios.raw.gz
+ip=master2ip::192.168.1.1:255.255.252.0:master2name::none nameserver=helperip
+
+4. coreos.inst.install_dev=sda coreos.inst.ignition_url=http://helperip:8080/install/master.ign
+coreos.inst.image_url=http://helperip:8080/install/bios.raw.gz
+ip=master3ip::192.168.1.1:255.255.252.0:master3name::none nameserver=helperip
+
+5. coreos.inst.install_dev=sda coreos.inst.ignition_url=http://helperip:8080/install/worker.ign
+coreos.inst.image_url=http://helperip:8080/install/bios.raw.gz
+ip=worker1name::192.168.1.1:255.255.252.0:worker1name::none nameserver=helperip
+
+6. coreos.inst.install_dev=sda coreos.inst.ignition_url=http://helperip:8080/install/worker.ign
+coreos.inst.image_url=http://helperip:8080/install/bios.raw.gz
+ip=worker2ip::192.168.1.1:255.255.252.0:worker2name::none nameserver=helperip
+
+NOTE: To know more about kernal commands click on --> https://docs.openshift.com/container-platform/4.6/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#creating-machines-bare-metal-restricted-network
+
+Creating the cluster:
+---------------------
+     To create the OpenShift Container Platform cluster, you wait for the bootstrap process to complete on the machines that you provisioned by using the Ignition config files that you generated with the installation program.
+    $ openshift-install --dir=<installation_directory> wait-for bootstrap-complete --log-level=info
+
+NOTE: To know more click on -->  https://docs.openshift.com/container-platform/4.6/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#installation-installing-bare-metal_installing-restricted-networks-bare-metal
+
+Logging in to the cluster by using the CLI:
+-------------------------------------------
+    $ export KUBECONFIG=<installation_directory>/auth/kubeconfig  -->  To export the kubeadmin credentials
+    $ oc whoami  -->  To verify you can run oc commands successfully using the exported configuration
+
+NOTE: To know more click on  -->  https://docs.openshift.com/container-platform/4.6/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#cli-logging-in-kubeadmin_installing-restricted-networks-bare-metal
+
+Approving the certificate signing requests for your machines:
+-------------------------------------------------------------
+    $ oc get nodes  -->  To check all the nodes are in ready state or not 
+    $ oc get csr  --> To see the CSRs status, if any CSRs are pending then approve them by using below command
+    $ oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs --no-run-if-empty oc adm            certificate approve  -->  To approve all the pending CSRs
+
+NOTE: To know more click on -->  https://docs.openshift.com/container-platform/4.6/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#installation-approve-csrs_installing-restricted-networks-bare-metal
+
+Then watch the cluster components come online:
+----------------------------------------------
+   $ watch -n5 oc get clusteroperators  
+
+NOTE: must and should all AVALABLE's are --> TRUE, PROGRESSING's are ---> FALSE, DEGRADED's are ---> false 
+To know more click on -->  https://docs.openshift.com/container-platform/4.6/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#installation-operators-config_installing-restricted-networks-bare-metal
+
+-->   $ oc get pods --all-namespaces   -->  To view all pods
+-->   $ oc create new-project PROJECT-NAME  -->  To create new project
+-->   $ oc get projects  -->  To get all the projects
+
+login to the cluster:
+---------------------
+-->  first you need to update nameserver helper ip on your system in /etc/resolv.conf
+-->  oc login https://api.clusterid.eidikointernal.com:6443  -->  To login using cli
+-->  https:console-openshift-console.apps.clusteris.eidikointernal.com  --> To login through WebConsole
+
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+
+OCS Storage configuration
+-------------------------
+https://access.redhat.com/documentation/en-us/red_hat_openshift_container_storage/4.6/html-single/deploying_openshift_container_storage_using_bare_metal_infrastructure/index#verifying-openshift-container-storage-deployment_rhocs
+
+apic
+----
+https://www.ibm.com/docs/en/cloud-paks/cp-integration/2020.2?topic=deployment-api-management-capability
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+CP4I INSTALLATION 2020.4 ON OCP 4.6 EUS 
+---------------------------------------
+----------------------------------------
+
+1.create a namespace 
+oc new-project cp4i
+
+2.login to ibm  registry
+docker login cp.icr.io --username cp --password entitlement_key
+take entitlement key from this link 
+https://login.ibm.com/authsvc/mtfim/sps/authsvc?PolicyId=urn:ibm:security:authentication:asf:basicldapuser&Target=https%3A%2F%2Flogin.ibm.com%2Foidc%2Fendpoint%2Fdefault%2Fauthorize%3FqsId%3D095f5546-f1f7-4932-818d-fcd385e360a4%26client_id%3DMyIBMDallasProdCI
+
+
+
+3.adding entitlement key to namespace(cp4i)
+
+oc create secret docker-registry ibm-entitlement-key –docker-username=cp –docker-password=<entitlement_key> --docker-server=cp.icr.io –namespace=cp4i
+
+4.install the ibm common services and foundational services by using the below link 
+https://www.ibm.com/docs/en/cpfs?topic=36-installing-foundational-services-by-using-console
+
+{ step 1:
+ 
+Installing the IBM Cloud Pak foundational services operator:
+
+
+To remove the OperatorSource that you created in a previous version, run the following command:
+
+oc -n openshift-marketplace delete operatorsource opencloud-operators –ignore-not-found
+step 2:
+To create a CatalogSource, paste the following definition in the YAML dialog box. (take this yaml and copy paste )
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: opencloud-operators
+  namespace: openshift-marketplace
+spec:
+  displayName: IBMCS Operators
+  publisher: IBM
+  sourceType: grpc
+  image: docker.io/ibmcom/ibm-common-service-catalog:3.6
+  updateStrategy:
+    registryPoll:
+      interval: 45m
+Click Create. The catalog or operator source opencloud-operators is created
+Verify that the source container is running :
+oc -n openshift-marketplace get pod | grep opencloud-operators
+step 3:
+
+      Create a namespace for the IBM Cloud Pak foundational services operator. You need a dedicated namespace for the Operator.
+    1. From the navigation pane, click Home > Projects. The Projects page is displayed. 
+    2. Click Create Project. A Create Project area is displayed. 
+    3. Enter details of the namespace that you are creating. For example, you can specify common-service as the name. 
+    4. Click Create. The namespace for your IBM Cloud Pak foundational services operator is created. 
+
+Step 4:
+       
+    • Install the IBM Cloud Pak foundational services operator that you created.
+    1. From the navigation pane, click Operators > OperatorHub. The OperatorHub page is displayed. 
+    2. In the All Items field, enter IBM Cloud Pak foundational services. The IBM Cloud Pak foundational services operator is displayed. 
+    3. Click the IBM Cloud Pak foundational services tile. The IBM Cloud Pak foundational services window is displayed. 
+    4. Click Install. You see the Install Operator page. 
+    5. Set Installation Mode to the specific namespace that you created for the IBM Cloud Pak foundational services operator. For example, ibm-common-service. 
+    6. Set Update Channel to the stable-v1 version. 
+    7. Set Approval Strategy to Automatic. 
+    8. Click Install. After a few minutes, the IBM Cloud Pak foundational services operator and the Operand Deployment Lifecycle Manager operator are installed, and you can see these operators on the Installed Operators page. 
+
+The IBM Cloud Pak foundational services operator creates the ibm-common-services namespace and installs the Operand Deployment Lifecycle Manager Operator and the IBM NamespaceScope Operator in the ibm-common-services namespace.
+
+Step 5:
+
+Creating the OperandRequest instance by using the YAML View
+Complete these steps to use the YAML to create the OperandRequest instance.
+    1. On the Create OperandRequest page, select YAML View.
+    2. Paste the following content in the YAML editor: (copy and paste  below yaml file)
+
+
+apiVersion: operator.ibm.com/v1alpha1
+kind: OperandRequest
+metadata:
+  name: common-service
+  namespace: ibm-common-services
+  labels:
+    app.kubernetes.io/instance: operand-deployment-lifecycle-manager
+    app.kubernetes.io/managed-by: operand-deployment-lifecycle-manager
+    app.kubernetes.io/name: odlm
+spec:
+  requests:
+    - operands:
+        - name: ibm-cert-manager-operator
+        - name: ibm-mongodb-operator
+        - name: ibm-iam-operator
+        - name: ibm-monitoring-grafana-operator
+        - name: ibm-healthcheck-operator
+        - name: ibm-management-ingress-operator
+        - name: ibm-licensing-operator
+        - name: ibm-metering-operator
+        - name: ibm-commonui-operator
+        - name: ibm-events-operator
+        - name: ibm-elastic-stack-operator
+        - name: ibm-ingress-nginx-operator
+        - name: ibm-auditlogging-operator
+        - name: ibm-platform-api-operator
+      registry: common-service
+
+Click Create
+
+You can see the list of services that are installed in your cluster on the Operators > Installed Operators page.
+
+Step 6:
+
+Verifying the installation
+Check operator status
+    1. From the navigation pane, click Home > Overview. The cluster status is displayed. 
+    2. Click Operators on the status card. The operator statuses are displayed. 
+    3. Click View all. All the operators that are installed in the cluster are displayed. 
+    4. Check the status of the foundational services operators. All operators should be in the Succeeded status
+
+oc get pods -n ibm-common-services
+
+
+oc -n ibm-common-services get csv
+
+common services and foundational services installation is completed ..only if all the opearators are in succeded state and all the pods are in rounning 
+
+
+5.adding the catalog sources to the cluster follow the below link to do this 
+
+https://www.ibm.com/docs/en/cloud-paks/cp-integration/2020.4?topic=installing-adding-online-catalog-sources-cluster
+
+step 1:
+
+Add the IBM operators to the list of installable operators.
+    1. Click the plus (+) icon to open the Import YAML dialog box. 
+    2. Paste the following resource definition in the dialog box:(copy and paste)
+
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: ibm-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  displayName: IBM Operator Catalog
+  image: 'icr.io/cpopen/ibm-operator-catalog:latest'
+  publisher: IBM
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 45m
+click on create 
+
+step 2:
+
+go to cp4i namespace and go to operator hub search for IBM CLOUD PAK FOR INTEGRATION PLATFORM NAVIGATOR click on install specify namespace as cp4i select EUS update channel 
+
+
+
+6.platform navigator deployment  and login to this ....to do this follow below link 
+
+https://www.ibm.com/docs/en/cloud-paks/cp-integration/2020.4?topic=installing-platform-navigator-deployment
+
+7. set the default storage class to rbd by using below command 
+kubectl patch storageclass <rbd> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+
+8.login to platform navigator by using its route and login by suing default authentication 
+
+
+Getting the admin password with the OpenShift Console
+To get the admin password in the OpenShift Console UI:
+    1. Log into the OpenShift cluster as a Cluster Administrator.. 
+    2. To switch to the ibm-common-services project, click the arrow to expand the Project list. 
+    3. In the navigation menu, click Workloads to expand the selections, then select Secrets. Open the platform-auth-idp-credentials secret. 
+    4. At the bottom of the Details page, in the Data section, click Reveal Values to get and copy the value for admin_password. 
+    5. Save the password to use when logging in to Platform Navigator. 
+Installation of cp4i completes ....!!!!!
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+common services and foundational services adding...after that adding catalog sources and after that install the opearator in cp4i namespace(after creating namespace must add the entitlem,ent key to cp4i namespace as a secret )
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+https://www.ibm.com/docs/en/cpfs?topic=36-installing-foundational-services-by-using-console
+
+Ace integrationserver particular version images.. From ibm entitlement registry
+-------------------------------------------------------------------------------
+https://www.ibm.com/docs/en/app-connect/containers_cd?topic=obtaining-app-connect-enterprise-server-image-from-cloud-container-registry#aceimages
+
+Image registry error certificates signed by unknown authority x509
+-------------------------------------------------------------------
+https://access.redhat.com/solutions/4308191
+get tls.crt from above link and put it inside of /etc/docker/certs.d/default-route-openshift-image-registry-apps.ocp4.eidikointernal.com
+ca.crt & tls.crt put inside of /etc/docker/certs.d/default-route-openshift-image-registry-apps.ocp4.eidikointernal.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
